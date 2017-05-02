@@ -1,0 +1,78 @@
+require 'rails_helper'
+
+RSpec.describe Task, type: :request do
+  context 'good requests' do
+    it 'serves a single task' do
+      task = create :task, name: 'Task Name', description: 'do these things'
+      get "/api/v1/tasks/#{task.id}"
+      
+      json = JSON.parse(response.body, symbolize_names: true)
+
+      expect(response.status).to eq(200)
+
+      expect(json[:name]).to eq 'Task Name'
+      expect(json[:description]).to eq 'do these things'
+    end
+
+    it 'serves tasks' do
+      create :task, name: 'Task Name', description: 'This is the task'
+      create :task, name: 'Another Task', description: 'Do this too'
+      get '/api/v1/tasks'
+      json = JSON.parse(response.body, symbolize_names: true)
+      expect(json.count).to eq(2)
+      expect(json.first[:name]).to eq 'Task Name'
+      expect(json.last[:name]).to eq 'Another Task'
+    end
+
+    it 'accepts a new task' do
+      list = create :list
+      task_params = attributes_for :task, name: 'Task Name', description: 'do these'
+      headers = { "ACCEPT": "application/json", 'Content-Type': 'application/json' }
+
+      post '/api/v1/tasks', params: { task: task_params, list_id: list.id }.to_json, headers: headers
+
+      expect(response.status).to eq(201)
+
+      json = JSON.parse(response.body, symbolize_names: true)
+
+      expect(json[:name]).to eq 'Task Name'
+      expect(json[:description]).to eq 'do these'
+    end
+
+    it 'updates an existing task' do
+      list = create :list
+      task = create :task, name: 'Initial Name', description: 'Initial description', list: list
+      
+      headers = { 'ACCEPT': 'application/json', 'Content-Type': 'application/json' }
+      new_data = { task: { name: 'New Name', description: 'New Description', estimate: 1, completed: 1}, list_id: list.id }.to_json
+      patch "/api/v1/tasks/#{task.id}", params: new_data, headers: headers
+
+      expect(response.status).to eq(200)
+
+      json = JSON.parse(response.body, symbolize_names: true)
+
+      expect(json[:name]).to eq 'New Name'
+      expect(json[:description]).to eq 'New Description'
+    end
+
+    it 'deletes an existing task' do
+      list = create :list
+      task = create :task
+
+      expect { delete "/api/v1/tasks/#{task.id}" }.to change{ Task.count }.from(1).to(0)
+    end
+  end
+  context 'shows good errors' do
+    it 'will not create a task without parameters' do
+      list = create :list
+      params = {list_id: list.id}.to_json
+      headers = { 'ACCEPT': 'application/json', 'Content-Type': 'application/json' }
+
+      post '/api/v1/tasks', params: params, headers: headers
+      
+      expect(response.status).to eq(500)
+      json = JSON.parse(response.body, symbolize_names: true)
+      expect(json[:message]).to include("Name can't be blank")
+    end
+  end
+end

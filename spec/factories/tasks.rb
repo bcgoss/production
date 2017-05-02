@@ -4,6 +4,6 @@ FactoryGirl.define do
     description "MyString"
     estimate 1
     completed 1
-    list nil
+    list
   end
 end
