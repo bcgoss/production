@@ -1,24 +1,3 @@
-# README
+# Production, a productivity app
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+This application is the API back end for making to-do lists. A list has many tasks which can be marked as completed. Users can estimate how long a given task might take. Data analysis tools compare estimates to reality, track frequency and predict tasks for your next list.
