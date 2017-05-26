@@ -59,7 +59,7 @@ RSpec.describe Task, type: :request do
 
     it 'deletes an existing task' do
       list = create :list
-      task = create :task
+      task = create :task, list: list
 
       expect { delete "/api/v1/lists/#{list.id}/tasks/#{task.id}" }.to change{ Task.count }.from(1).to(0)
     end
