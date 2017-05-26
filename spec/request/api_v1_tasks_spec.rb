@@ -46,7 +46,7 @@ RSpec.describe Task, type: :request do
       task = create :task, name: 'Initial Name', description: 'Initial description', list: list
       
       headers = { 'ACCEPT': 'application/json', 'Content-Type': 'application/json' }
-      new_data = { task: { name: 'New Name', description: 'New Description', estimate: 1, completed: 1}}.to_json
+      new_data = { task: { name: 'New Name', description: 'New Description', estimate: 1, progress: 1}}.to_json
       patch "/api/v1/lists/#{list.id}/tasks/#{task.id}", params: new_data, headers: headers
 
       expect(response.status).to eq(200)

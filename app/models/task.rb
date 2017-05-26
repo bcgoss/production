@@ -3,5 +3,7 @@ class Task < ApplicationRecord
   has_many :task_resources
   has_many :resources, through: :task_resources
 
-  validates_presence_of :name, :description, :estimate, :completed
+  validates_presence_of :name, :description, :estimate
+
+  enum progress: [:started, :complete]
 end
