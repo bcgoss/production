@@ -5,3 +5,10 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+list = List.new(name: 'Default List')
+if list.save
+  puts 'List created'
+else
+  puts 'List errors: '
+  puts list.errors.full_messages.join('. ')
+end
